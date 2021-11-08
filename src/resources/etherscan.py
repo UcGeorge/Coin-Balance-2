@@ -42,6 +42,15 @@ def process(address: str):
         result[address]['ETH'] = 0
         print(f'[WARNING] Unable to get balance for {address}')
     pass
+
+    try:
+        result[address]['Total token balance'] = _soup.select(
+            '#availableBalanceDropdown')[0].text.split()[0]
+    except IndexError:
+        result[address]['Total token balance'] = 0
+        print(f'[WARNING] Unable to get total token balance for {address}')
+    pass
+
     tokens = _soup.select('li.list-custom')
 
     print(f'[INFO] Getting token balance for {address}')

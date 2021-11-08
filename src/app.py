@@ -7,6 +7,7 @@ from threading import Thread
 import time
 
 ENCODING = "utf-8"
+INPUT_FILE = 'input/input.txt'
 
 
 def loading_indicator():
@@ -16,17 +17,8 @@ def loading_indicator():
 
 
 if __name__ == '__main__':
-    q_table = [
-        {
-            'type': 'input',
-            'qmark': '[?]',
-            'name': 'input',
-            'message': 'Enter location of input file'
-        }
-    ]
-    user_config = prompt(q_table, style=custom_style_3)
-    input_file_location = user_config['input']
-    address_list = open(input_file_location, "r").read().split('\n\n')
+    input('[PROMPT] Press enter to confirm input is at input/input.txt ')
+    address_list = open(INPUT_FILE, "r").read().split('\n')
 
     etherscan_thread = ThreadWithReturnValue(
         target=etherscan.get_balance, args=(address_list,))
