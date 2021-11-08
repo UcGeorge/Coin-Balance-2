@@ -32,6 +32,7 @@ if __name__ == '__main__':
     Thread(target=loading_indicator, daemon=True).start()
 
     result = combine(etherscan_thread.join(), bscscan_thread.join())
+    result['address couunt'] = len(result.keys())
 
     with open(f'output/output.json', "w", encoding=ENCODING) as out_file:
         out_file.write(JSONEncoder().encode(result))
