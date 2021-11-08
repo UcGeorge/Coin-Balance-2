@@ -1,5 +1,5 @@
 
 .env
-input/*.txt
+# input/*.txt
 src/resources/__pycache__/*
 .vscode/*
