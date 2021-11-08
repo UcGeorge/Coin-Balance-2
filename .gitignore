@@ -3,3 +3,4 @@
 # input/*.txt
 src/resources/__pycache__/*
 .vscode/*
+*.tmp

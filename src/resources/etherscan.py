@@ -44,10 +44,10 @@ def process(address: str):
     pass
 
     try:
-        result[address]['Total token balance'] = _soup.select(
+        result[address]['Etherscan total token balance'] = _soup.select(
             '#availableBalanceDropdown')[0].text.split()[0]
     except IndexError:
-        result[address]['Total token balance'] = 0
+        result[address]['Etherscan total token balance'] = 0
         print(f'[WARNING] Unable to get total token balance for {address}')
     pass
 
