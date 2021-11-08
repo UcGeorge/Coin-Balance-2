@@ -1,6 +1,6 @@
 from resources import helpers as help
+import concurrent.futures
 from typing import Any, Dict
-from tqdm import tqdm
 from bs4 import BeautifulSoup as soup
 
 SOURCE = "bscscan.com"
@@ -13,30 +13,40 @@ def get_balance(addresses: 'list[str]') -> Dict[str, Any]:
     result: Dict[str, Any] = {}
     print("[INFO] Processing from https://bscscan.com")
 
-    for i in tqdm(range(0, len(addresses))):
-        address = addresses[i]
-        result[address] = {}
-        result[address]['BscScan tokens'] = {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        futures = []
+        for address in addresses:
+            futures.append(executor.submit(process, address=address))
+        for future in concurrent.futures.as_completed(futures):
+            for x, y in future.result().items():
+                result[x] = y
+    return result
 
-        _html = help.get(SOURCE, URL.format(address))
-        _soup = soup(_html, 'html.parser')
 
-        eth_balance = _soup.select(BALANCE_SELECTOR)
+def process(address: str):
+    result = {}
+    result[address] = {}
+    result[address]['BscScan tokens'] = {}
+
+    _html = help.get(SOURCE, URL.format(address))
+    _soup = soup(_html, 'html.parser')
+
+    eth_balance = _soup.select(BALANCE_SELECTOR)
+    try:
+        result[address]['BNB'] = eth_balance[0].text.split()[0]
+    except IndexError:
+        result[address]['BNB'] = 0
+    pass
+
+    tokens = _soup.select(TOKEN_SELECTOR)
+    for i in tokens:
         try:
-            result[address]['BNB'] = eth_balance[0].text.split()[0]
+            token_name = i.select("a > div > div > span")[
+                0].text.strip()
+            token_balance = i.select("a > div > span")[
+                0].text.split()[0]
+            # print(f"\n{token_name} : {token_balance}")
         except IndexError:
-            result[address]['BNB'] = 0
-        pass
-
-        tokens = _soup.select(TOKEN_SELECTOR)
-        for i in tokens:
-            try:
-                token_name = i.select("a > div > div > span")[0].text.strip()
-                token_balance = i.select("a > div > span")[0].text.split()[0]
-                # print(f"\n{token_name} : {token_balance}")
-            except IndexError:
-                continue
-            result[address]['BscScan tokens'][token_name] = token_balance
-
-    # print(result)
+            continue
+        result[address]['BscScan tokens'][token_name] = token_balance
     return result
