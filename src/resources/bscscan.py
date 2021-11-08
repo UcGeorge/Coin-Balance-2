@@ -29,19 +29,24 @@ def process(address: str):
     result[address] = {}
     result[address]['BEP-20'] = {}
     result[address]['BEP-others'] = {}
+    result[address]['BNB'] = "ERROR"
+    _soup: soup = None
 
-    print(f'[INFO] Getting online data for {address}')
-    _html = help.get(SOURCE, URL.format(address))
-    _soup = soup(_html, 'lxml')
+    i: int = 0
+    while result[address]['BNB'] == "ERROR":
+        print(f'[INFO] Getting online data for {address}. Retried {i} times')
+        _html = help.get(SOURCE, URL.format(address))
+        _soup = soup(_html, 'lxml')
 
-    eth_balance = _soup.select(BALANCE_SELECTOR)
-    try:
-        result[address]['BNB'] = eth_balance[0].text.split()[0]
-        print(f'[INFO] Successfully gotten balance for {address}')
-    except IndexError:
-        result[address]['BNB'] = 0
-        print(f'[WARNING] Unable to get balance for {address}')
-    pass
+        eth_balance = _soup.select(BALANCE_SELECTOR)
+        try:
+            result[address]['BNB'] = eth_balance[0].text.split()[0]
+            print(f'[SUCCESS] Successfully gotten balance for {address}')
+        except IndexError:
+            result[address]['BNB'] = "ERROR"
+            print(f'[WARNING] Unable to get balance for {address}')
+        pass
+        i += 1
 
     try:
         result[address]['BscScan total token balance'] = _soup.select(
@@ -63,7 +68,7 @@ def process(address: str):
                     0].text.split()[0]
                 result[address]['BEP-20'][token_name] = token_balance
                 print(
-                    f'[INFO] Successfully gotten balance for BEP-20 token for {address}')
+                    f'[SUCCESS] Successfully gotten balance for BEP-20 token for {address}')
             except IndexError:
                 print(
                     f'[WARNING] Unable to get balance for BEP-20 token for {address}')
@@ -76,7 +81,7 @@ def process(address: str):
                     0].text.split()[0]
                 result[address]['BEP-others'][token_name] = token_balance
                 print(
-                    f'[INFO] Successfully gotten balance for token for {address}')
+                    f'[SUCCESS] Successfully gotten balance for token for {address}')
             except IndexError:
                 print(
                     f'[WARNING] Unable to get balance for token for {address}')
