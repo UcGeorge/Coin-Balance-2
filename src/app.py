@@ -18,7 +18,7 @@ def loading_indicator():
 
 if __name__ == '__main__':
     input('[PROMPT] Press enter to confirm input is at input/input.txt ')
-    address_list = open(INPUT_FILE, "r").read().split('\n')
+    address_list = open(INPUT_FILE, "r").read().replace(" ", '').split('\n')
 
     etherscan_thread = ThreadWithReturnValue(
         target=etherscan.get_balance, args=(address_list,))
