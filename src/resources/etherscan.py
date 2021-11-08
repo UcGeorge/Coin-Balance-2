@@ -24,29 +24,53 @@ def get_balance(addresses: 'list[str]') -> Dict[str, Any]:
 
 
 def process(address: str):
+    print(f'[INFO] Processing {address}')
     result = {}
     result[address] = {}
-    result[address]['Etherscan tokens'] = {}
+    result[address]['ERC-20'] = {}
+    result[address]['ERC-others'] = {}
 
+    print(f'[INFO] Getting online data for {address}')
     _html = help.get(SOURCE, URL.format(address))
-    _soup = soup(_html, 'html.parser')
+    _soup = soup(_html, 'lxml')
 
     eth_balance = _soup.select(BALANCE_SELECTOR)
     try:
         result[address]['ETH'] = eth_balance[0].text.split()[0]
+        print(f'[INFO] Successfully gotten balance for {address}')
     except IndexError:
         result[address]['ETH'] = 0
+        print(f'[WARNING] Unable to get balance for {address}')
     pass
+    tokens = _soup.select('li.list-custom')
 
-    tokens = _soup.select(TOKEN_SELECTOR)
+    print(f'[INFO] Getting token balance for {address}')
     for i in tokens:
-        try:
-            token_name = i.select("a > div > div > span")[
-                0].text.strip()
-            token_balance = i.select("a > div > span")[
-                0].text.split()[0]
-            # print(f"\n{token_name} : {token_balance}")
-        except IndexError:
-            continue
-        result[address]['Etherscan tokens'][token_name] = token_balance
+        if 'list-custom-ERC20' in i["class"]:
+            try:
+                token_name = i.select("a > div > div > span")[
+                    0].text.strip()
+                token_balance = i.select("a > div > span")[
+                    0].text.split()[0]
+                result[address]['ERC-20'][token_name] = token_balance
+                print(
+                    f'[INFO] Successfully gotten balance for BEP-20 token for {address}')
+            except IndexError:
+                print(
+                    f'[WARNING] Unable to get balance for BEP-20 token for {address}')
+                continue
+        else:
+            try:
+                token_name = i.select("a > div > div > span")[
+                    0].text.strip()
+                token_balance = i.select("a > div > span")[
+                    0].text.split()[0]
+                result[address]['ERC-others'][token_name] = token_balance
+                print(
+                    f'[INFO] Successfully gotten balance for token for {address}')
+            except IndexError:
+                print(
+                    f'[WARNING] Unable to get balance for token for {address}')
+                continue
+
     return result

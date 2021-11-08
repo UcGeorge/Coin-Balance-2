@@ -18,6 +18,7 @@ def get(host: str, url: str) -> str:
 
 
 def combine(a: 'Dict[str, Any]', b: 'Dict[str, Any]') -> Dict[str, Any]:
+    print(f'[INFO] Merging results for Etherscan and BscScan')
     result: Dict[str, Any] = {}
     for i in a.keys():
         result[i] = {}
