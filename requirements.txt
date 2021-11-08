@@ -1,2 +1,4 @@
 PyInquirer
 python-dotenv
+requests
+tqdm
