@@ -1,48 +1,42 @@
-import os
-import requests
 from typing import Any, Dict
-from dotenv import load_dotenv
 from tqdm import tqdm
+from bs4 import BeautifulSoup as soup
+from resources import helpers as help
 
-load_dotenv()
-
-API_KEY = os.getenv('ETHERSCAN_API_KEY')
-
-API = "https://api.etherscan.io/api/"
-GET_BALANCE_ENDPOINT = "?module=account\
-&action=balance\
-&address={0}\
-&tag=latest\
-&apikey=" + API_KEY
-GET_TOKEN_BALANCE = "?module=account\
-&action=tokenbalance\
-&contractaddress={0}\
-&address={1}\
-&tag=latest\
-&apikey=" + API_KEY
+SOURCE = "etherscan.io"
+URL = "/address/{0}"
+BALANCE_SELECTOR = "#ContentPlaceHolder1_divSummary > div.row.mb-4 > div.col-md-6.mb-3.mb-md-0 > div > div.card-body > div:nth-child(1) > div.col-md-8"
+TOKEN_SELECTOR = "li.list-custom"
 
 
-def get_balance(addresses: 'list[str]', tokens: 'Dict[str, list[Dict[str, str]]]') -> Dict[str, Any]:
+def get_balance(addresses: 'list[str]') -> Dict[str, Any]:
     result: Dict[str, Any] = {}
     print("[INFO] Processing from https://etherscan.io")
 
     for i in tqdm(range(0, len(addresses))):
         address = addresses[i]
         result[address] = {}
-        url = API + GET_BALANCE_ENDPOINT.format(address)
-        response = requests.request("GET", url, headers={}, data={})
-        eth_balance = response.json()['result']
-        result[address]['ETH'] = eth_balance
+        result[address]['Etherscan tokens'] = {}
 
-        for network in tokens.keys():
-            result[address][network] = {}
-            for token in tokens[network]:
-                contract_address = token['contractAddress']
-                url = API + GET_TOKEN_BALANCE.format(contract_address, address)
-                response = requests.request("GET", url, headers={}, data={})
-                token_balance = response.json()['result']
-                result[address][network][token['contractName']
-                                         ] = token_balance
+        _html = help.get(SOURCE, URL.format(address))
+        _soup = soup(_html, 'html.parser')
 
-    print(result)
+        eth_balance = _soup.select(BALANCE_SELECTOR)
+        try:
+            result[address]['ETH'] = eth_balance[0].text.split()[0]
+        except IndexError:
+            result[address]['ETH'] = 0
+        pass
+
+        tokens = _soup.select(TOKEN_SELECTOR)
+        for i in tokens:
+            try:
+                token_name = i.select("a > div > div > span")[0].text.strip()
+                token_balance = i.select("a > div > span")[0].text.split()[0]
+                # print(f"\n{token_name} : {token_balance}")
+            except IndexError:
+                continue
+            result[address]['Etherscan tokens'][token_name] = token_balance
+
+    # print(result)
     return result
