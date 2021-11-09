@@ -1,6 +1,8 @@
 
 .env
-# input/*.txt
+input/*
+output/*
+error/*
 src/resources/__pycache__/*
 .vscode/*
 *.tmp
