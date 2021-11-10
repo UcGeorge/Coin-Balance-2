@@ -1,4 +1,4 @@
-from resources import helpers as help
+from src import helpers as help
 import concurrent.futures
 from typing import Any, Dict
 from bs4 import BeautifulSoup as soup
