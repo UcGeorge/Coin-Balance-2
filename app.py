@@ -67,6 +67,3 @@ def main(addresses: str) -> Dict[str, Any]:
     print(f"[INFO] Finished in {time.time() - start_time} seconds")
     # ! print("[INFO] Results can be found in output/output.json")
     return result
-
-
-app.run()

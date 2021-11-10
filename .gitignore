@@ -4,5 +4,6 @@ input/*
 output/*
 error/*
 src/__pycache__/*
+__pycache__/*
 .vscode/*
 *.tmp
