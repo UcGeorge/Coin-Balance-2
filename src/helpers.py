@@ -1,3 +1,4 @@
+import cfscrape
 from threading import Thread
 from typing import Any, Dict
 
@@ -6,14 +7,11 @@ import http.client
 
 
 def get(host: str, url: str) -> str:
-    conn = http.client.HTTPSConnection(host)
-    headers = {
-        'Cookie': 'ASP.NET_SessionId=ojesw3gqpzvqual4zg1zvfz4; __cflb=02DiuFnsSsHWYH8WqVXbZzkeTrZ6gtmGUuxZNBWynJU3E'
-    }
-    conn.request("GET", url, '', headers)
-    res = conn.getresponse()
-    data = res.read()
-    _html = data.decode("utf-8")
+    scraper = cfscrape.create_scraper()
+    _html = scraper.get(f"https://{host+url}").content.decode('UTF-8')
+    file_name = (host+url).replace('/', '-')
+    with open(f'error/{file_name}.html', "w", encoding='utf-8') as out_file:
+        out_file.write(_html)
     return _html
 
 
