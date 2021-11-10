@@ -45,6 +45,7 @@ def process(address: str):
         except IndexError:
             result[address]['ETH'] = "ERROR"
             print(f'[WARNING] Unable to get balance for {address}')
+            exit()
         pass
         i += 1
 
