@@ -1,4 +1,6 @@
 
+# * COMMENTS IN RED REPRESENT PARTS OF THE CODE THAT WILL NOT BE NEEDED IN THE API VERSION
+
 # ! from json.encoder import JSONEncoder
 from typing import Any, Dict
 from src import etherscan, bscscan
@@ -8,14 +10,8 @@ from src.helpers import combine, ThreadWithReturnValue
 # ! from threading import Thread
 import time
 from flask import Flask, request
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-app.config['DEBUG'] = True if os.getenv('DEBUG') == 'True' else False
 
 
 @app.route("/")
@@ -30,8 +26,6 @@ def process():
         return main(addresses)
     except:
         return "An error occoured"
-
-# * COMMENTS IN RED REPRESENT PARTS OF THE CODE THAT WILL NOT BE NEEDED IN THE API VERSION
 
 # ! ENCODING = "utf-8"
 # ! INPUT_FILE = 'input/input.txt'
@@ -67,6 +61,3 @@ def main(addresses: str) -> Dict[str, Any]:
     print(f"[INFO] Finished in {time.time() - start_time} seconds")
     # ! print("[INFO] Results can be found in output/output.json")
     return result
-
-
-# app.run()
