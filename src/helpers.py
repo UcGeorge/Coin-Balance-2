@@ -9,9 +9,9 @@ import http.client
 def get(host: str, url: str) -> str:
     scraper = cfscrape.create_scraper()
     _html = scraper.get(f"https://{host+url}").content.decode('UTF-8')
-    # ! file_name = (host+url).replace('/', '-')
-    # ! with open(f'error/{file_name}.html', "w", encoding='utf-8') as out_file:
-    # !     out_file.write(_html)
+    file_name = (host+url).replace('/', '-')
+    with open(f'error/{file_name}.html', "w", encoding='utf-8') as out_file:
+        out_file.write(_html)
     return _html
 
 
