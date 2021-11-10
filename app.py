@@ -69,4 +69,4 @@ def main(addresses: str) -> Dict[str, Any]:
     return result
 
 
-app.run()
+# app.run()
