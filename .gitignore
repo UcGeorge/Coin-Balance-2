@@ -2,7 +2,7 @@
 .env
 input/*
 output/*
-# error/*
+error/*-address-*.html
 src/__pycache__/*
 __pycache__/*
 .vscode/*
