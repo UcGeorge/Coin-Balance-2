@@ -11,7 +11,8 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-app.config['DEBUG'] = True if os.getenv('DEBUG') == 'True' else False
+DEBUG = True if os.getenv('DEBUG') == 'True' else False
+app.config['DEBUG'] = DEBUG
 
 
 @app.route("/")
@@ -21,11 +22,16 @@ def index():
 
 @app.route("/api/v1")
 def process():
-    try:
+    if DEBUG:
+        print('[DEBUG]')
         address = request.form.get('address')
         return main(address)
-    except:
-        return 'An error occoured'
+    else:
+        try:
+            address = request.form.get('address')
+            return main(address)
+        except:
+            return 'An error occoured'
 
 # * COMMENTS IN RED REPRESENT PARTS OF THE CODE THAT WILL NOT BE NEEDED IN THE API VERSION
 
@@ -40,6 +46,3 @@ def main(address: str) -> Dict[str, Any]:
 
     print(f"[INFO] Finished in {time.time() - start_time} seconds")
     return result
-
-
-# app.run()

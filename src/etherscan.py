@@ -4,6 +4,7 @@ from src import helpers as help
 import concurrent.futures
 from dotenv import load_dotenv
 import os
+from web3 import Web3
 
 load_dotenv()
 
@@ -17,11 +18,19 @@ def token_name(token: Dict[str, Any]) -> str:
 
 
 def token_balance(token: Dict[str, Any]) -> str:
-    balance = token['rawBalance']
-    return f"{balance[:-18]}.{balance[-18:]}" if len(balance) > 18 else f"0.{balance}"
+    balance = Web3.fromWei(int(token['rawBalance']), 'ether')
+    return help.float_to_str(float(balance))
+
+
+# ? def get_total_token_balance(tokens) -> str:
+# ?     balance = 0
+# ?     for token in tokens:
+# ?         balance += Web3.fromWei(int(token['rawBalance']), 'ether')
+# ?     return help.float_to_str(float(balance))
 
 
 def get_balance(address: str) -> Dict[str, Any]:
+
     result: Dict[str, Any] = {}
     print("[INFO] Processing from https://ethplorer.io")
     data = help.get(SOURCE, URL.format(address, API_KEY), True)
@@ -32,5 +41,8 @@ def get_balance(address: str) -> Dict[str, Any]:
                             for item in data['tokens']}
     except KeyError:
         result['ERC-20'] = {}
+
+    # ? result['Etherscan total token balance'] = get_total_token_balance(
+    # ?     data['tokens'])
 
     return result
