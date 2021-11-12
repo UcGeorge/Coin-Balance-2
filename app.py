@@ -29,7 +29,8 @@ def process():
         addresses = request.form.get('addresses')
         return main(addresses)
     except:
-        return open('error/etherscan.io-address-0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae.html', 'r').read()
+        return 'An error occoured'
+        #! return open('error/etherscan.io-address-0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae.html', 'r').read()
 
 # * COMMENTS IN RED REPRESENT PARTS OF THE CODE THAT WILL NOT BE NEEDED IN THE API VERSION
 

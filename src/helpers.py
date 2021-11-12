@@ -24,7 +24,7 @@ def get(host: str, url: str, error: bool = False) -> str:
             _ = eth_balance[0].text.split()[0]
             return _html
         except IndexError:
-            writeToFile(host+url, 'html', 'error', _html)
+            # writeToFile(host+url, 'html', 'error', _html)
             get(host, url, True)
     else:
         print(f'[INFO] Getting online data in NORMAL MODE for {url}')
@@ -36,7 +36,7 @@ def get(host: str, url: str, error: bool = False) -> str:
             _ = eth_balance[0].text.split()[0]
             return _html
         except IndexError:
-            writeToFile(host+url, 'html', 'error', _html)
+            # writeToFile(host+url, 'html', 'error', _html)
             get(host, url, True)
 
 
