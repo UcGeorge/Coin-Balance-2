@@ -1,6 +1,2 @@
-PyInquirer
-python-dotenv
 requests
 tqdm
-bs4
-lxml
