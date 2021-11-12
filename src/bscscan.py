@@ -41,10 +41,10 @@ def process(address: str):
         eth_balance = _soup.select(BALANCE_SELECTOR)
         try:
             result[address]['BNB'] = eth_balance[0].text.split()[0]
-            print(f'[SUCCESS] Successfully gotten balance for {address}')
+            print(f'[SUCCESS] Successfully gotten bnb balance for {address}')
         except IndexError:
             result[address]['BNB'] = "ERROR"
-            print(f'[WARNING] Unable to get balance for {address}')
+            print(f'[WARNING] Unable to get bnb balance for {address}')
         pass
         i += 1
 
@@ -53,12 +53,12 @@ def process(address: str):
             '#availableBalanceDropdown')[0].text.split()[0]
     except IndexError:
         result[address]['BscScan total token balance'] = 0
-        print(f'[WARNING] Unable to get total token balance for {address}')
+        print(f'[WARNING] Unable to get total bnb token balance for {address}')
     pass
 
     tokens = _soup.select('li.list-custom')
 
-    print(f'[INFO] Getting token balance for {address}')
+    print(f'[INFO] Getting bnb token balance for {address}')
     for i in tokens:
         if 'list-custom-BEP-20' in i["class"]:
             try:
@@ -81,10 +81,10 @@ def process(address: str):
                     0].text.split()[0]
                 result[address]['BEP-others'][token_name] = token_balance
                 print(
-                    f'[SUCCESS] Successfully gotten balance for token for {address}')
+                    f'[SUCCESS] Successfully gotten bnb balance for token for {address}')
             except IndexError:
                 print(
-                    f'[WARNING] Unable to get balance for token for {address}')
+                    f'[WARNING] Unable to get bnb balance for token for {address}')
                 continue
 
     return result

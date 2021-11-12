@@ -41,10 +41,10 @@ def process(address: str):
         eth_balance = _soup.select(BALANCE_SELECTOR)
         try:
             result[address]['ETH'] = eth_balance[0].text.split()[0]
-            print(f'[SUCCESS] Successfully gotten balance for {address}')
+            print(f'[SUCCESS] Successfully gotten ether balance for {address}')
         except IndexError:
             result[address]['ETH'] = "ERROR"
-            print(f'[WARNING] Unable to get balance for {address}')
+            print(f'[WARNING] Unable to get ether balance for {address}')
             exit()
         pass
         i += 1
@@ -54,12 +54,13 @@ def process(address: str):
             '#availableBalanceDropdown')[0].text.split()[0]
     except IndexError:
         result[address]['Etherscan total token balance'] = 0
-        print(f'[WARNING] Unable to get total token balance for {address}')
+        print(
+            f'[WARNING] Unable to get total ether token balance for {address}')
     pass
 
     tokens = _soup.select('li.list-custom')
 
-    print(f'[INFO] Getting token balance for {address}')
+    print(f'[INFO] Getting ether token balance for {address}')
     for i in tokens:
         if 'list-custom-ERC20' in i["class"]:
             try:
@@ -69,10 +70,10 @@ def process(address: str):
                     0].text.split()[0]
                 result[address]['ERC-20'][token_name] = token_balance
                 print(
-                    f'[SUCCESS] Successfully gotten balance for BEP-20 token for {address}')
+                    f'[SUCCESS] Successfully gotten balance for ERC-20 token for {address}')
             except IndexError:
                 print(
-                    f'[WARNING] Unable to get balance for BEP-20 token for {address}')
+                    f'[WARNING] Unable to get balance for ERC-20 token for {address}')
                 continue
         else:
             try:
@@ -82,10 +83,10 @@ def process(address: str):
                     0].text.split()[0]
                 result[address]['ERC-others'][token_name] = token_balance
                 print(
-                    f'[SUCCESS] Successfully gotten balance for token for {address}')
+                    f'[SUCCESS] Successfully gotten ether balance for token for {address}')
             except IndexError:
                 print(
-                    f'[WARNING] Unable to get balance for token for {address}')
+                    f'[WARNING] Unable to get ether balance for token for {address}')
                 continue
 
     return result
