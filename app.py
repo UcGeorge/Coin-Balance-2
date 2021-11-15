@@ -22,7 +22,8 @@ def get(address: str):
 if __name__ == '__main__':
     result = {}
     input(f'[PROMPT] Press enter to confirm input is at {INPUT_FILE} ')
-    address_list = open(INPUT_FILE, "r").read().replace(" ", '').split('\n')
+    address_list = open(INPUT_FILE, "r").read(
+    ).strip().replace(" ", '').split('\n')
 
     start_time = time.time()
     for i in tqdm(range(len(address_list))):
